@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "allOf": [{ "$ref": "vscode://schemas/settings/folder" }],
+    "properties": {
+        "@extends": {
+            "description": "Settings files to start from, applied before this file. A path relative to this file (\"./team.json\") or a file in an npm package (\"@acme/vscode-settings/base.json\").",
+            "anyOf": [
+                { "type": "string" },
+                { "type": "array", "items": { "type": "string" } }
+            ]
+        },
+        "@windows": {
+            "description": "Settings used only on Windows. Applied after the other settings in this file.",
+            "$ref": "vscode://schemas/settings/folder"
+        },
+        "@macos": {
+            "description": "Settings used only on macOS. Applied after the other settings in this file.",
+            "$ref": "vscode://schemas/settings/folder"
+        },
+        "@linux": {
+            "description": "Settings used only on Linux. Applied after the other settings in this file.",
+            "$ref": "vscode://schemas/settings/folder"
+        }
+    }
+}

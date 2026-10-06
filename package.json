@@ -1,0 +1,132 @@
+{
+  "name": "settings-layers",
+  "displayName": "Settings Layers",
+  "description": "Team settings in git, your own settings on top, and settings for each operating system. VS Code builds settings.json from the layers.",
+  "version": "1.0.0",
+  "publisher": "lagudafuadtosin",
+  "author": "Fuad Laguda",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lagudafuadtosin/settings-layers"
+  },
+  "bugs": {
+    "url": "https://github.com/lagudafuadtosin/settings-layers/issues"
+  },
+  "homepage": "https://github.com/lagudafuadtosin/settings-layers#readme",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "settings",
+    "workspace settings",
+    "settings.json",
+    "team",
+    "local settings",
+    "shared settings",
+    "per platform",
+    "windows",
+    "macos",
+    "linux",
+    "settings sync",
+    "monorepo"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Settings Layers writes .vscode/settings.json from files in the workspace, so it only runs in trusted folders."
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "settingsLayers.init",
+        "title": "Set Up Layers",
+        "category": "Settings Layers"
+      },
+      {
+        "command": "settingsLayers.explain",
+        "title": "Where Does Each Setting Come From?",
+        "category": "Settings Layers"
+      },
+      {
+        "command": "settingsLayers.openShared",
+        "title": "Open Shared Settings (settings.shared.json)",
+        "category": "Settings Layers"
+      },
+      {
+        "command": "settingsLayers.openLocal",
+        "title": "Open My Settings (settings.local.json)",
+        "category": "Settings Layers"
+      },
+      {
+        "command": "settingsLayers.rebuild",
+        "title": "Rebuild settings.json",
+        "category": "Settings Layers"
+      }
+    ],
+    "configuration": {
+      "title": "Settings Layers",
+      "properties": {
+        "settingsLayers.platform": {
+          "type": "object",
+          "scope": "application",
+          "default": {},
+          "markdownDescription": "User settings for each operating system. This setting syncs to all your machines, and each machine applies only its own block. Every key named here is added to `#settingsSync.ignoredSettings#` so the machines stop overwriting each other.\n\nExample: `{ \"windows\": { \"editor.fontSize\": 13 }, \"macos\": { \"editor.fontSize\": 15 } }`",
+          "properties": {
+            "windows": { "type": "object", "description": "User settings used only on Windows." },
+            "macos": { "type": "object", "description": "User settings used only on macOS." },
+            "linux": { "type": "object", "description": "User settings used only on Linux." }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "**/.vscode/settings.shared.json",
+          "**/.vscode/settings.local.json"
+        ],
+        "url": "./schemas/layers.schema.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "jsonc",
+        "filenamePatterns": [
+          "**/.vscode/settings.shared.json",
+          "**/.vscode/settings.local.json"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run bundle",
+    "bundle": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --target=node18 --main-fields=module,main --minify",
+    "compile": "tsc -p .",
+    "unit": "npm run compile && mocha --ui tdd out/test/unit/*.test.js",
+    "test": "npm run compile && npm run bundle && node out/test/runTests.js"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.19.43",
+    "@types/vscode": "1.75",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.24.2",
+    "mocha": "^10.8.2",
+    "typescript": "^5.9.3"
+  }
+}
